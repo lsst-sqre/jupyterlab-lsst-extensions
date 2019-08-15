@@ -1,7 +1,7 @@
 """
 Python module to initialize Server Extension (& Notebook Extension?)
 """
-from jupyterlab_lsstquery.handlers import setup_handlers
+from .handlers import setup_handlers
 
 
 def _jupyter_server_extension_paths():
@@ -9,7 +9,7 @@ def _jupyter_server_extension_paths():
     Function to declare Jupyter Server Extension Paths.
     """
     return [{
-        'module': 'jupyterlab_lsstquery',
+        'module': 'jupyterlab_lsstextensions',
     }]
 
 

@@ -39,7 +39,7 @@ import {
  */
 export
 namespace CommandIDs {
-  export const lsstquery: string = 'lsstquery';
+  export const lsstQuery: string = 'lsstquery';
 };
 
 /**
@@ -59,17 +59,24 @@ function activateLSSTLabExtensions(app: JupyterFrontEnd, mainMenu: IMainMenu, do
 
   let svcManager = app.serviceManager;
 
-  app.commands.addCommand(CommandIDs.lsstquery, {
+  app.commands.addCommand(CommandIDs.lsstQuery, {
     label: 'Open from Query ID...',
-    caption: 'Open notebook from supplied query ID',
+    caption: 'Open notebook from supplied API query ID',
     execute: () => {
-      lsstQuery(app, docManager, svcManager)
+      lsstQuery(app, docManager, svcManager, "api")
+    }
+  });
+  app.commands.addCommand(CommandIDs.lsstQuery, {
+    label: 'Open from CI ID...',
+    caption: 'Open notebook from supplied Squash CI ID',
+    execute: () => {
+      lsstQuery(app, docManager, svcManager, "squash")
     }
   });
 
   // Add commands and menu itmes.
   const menu = new Menu({ commands: app.commands })
-  menu.addItem({ command: CommandIDs.lsstquery })
+  menu.addItem({ command: CommandIDs.lsstQuery })
   menu.title.label = "LSST"
   mainMenu.addMenu(menu, {
     rank: 420,
@@ -77,8 +84,8 @@ function activateLSSTLabExtensions(app: JupyterFrontEnd, mainMenu: IMainMenu, do
 }
 
 class QueryHandler extends Widget {
-  constructor() {
-    super({ node: Private.createQueryNode() });
+  constructor(prompt: string) {
+    super({ node: Private.createQueryNode(prompt) });
     this.addClass('lsst-qh')
   }
 
@@ -93,10 +100,10 @@ class QueryHandler extends Widget {
 
 
 
-function queryDialog(manager: IDocumentManager): Promise<string | null> {
+function queryDialog(manager: IDocumentManager, prompt: string): Promise<string | null> {
   let options = {
     title: 'Query ID',
-    body: new QueryHandler(),
+    body: new QueryHandler(prompt),
     focusNodeSelector: 'input',
     buttons: [Dialog.cancelButton(), Dialog.okButton({ label: 'CREATE' })]
   }
@@ -150,15 +157,23 @@ function apiRequest(url: string, init: RequestInit, settings: ServerConnection.I
     });
 }
 
-function lsstQuery(app: JupyterFrontEnd, docManager: IDocumentManager, svcManager: ServiceManager): void {
-  queryDialog(docManager).then(queryid => {
+function lsstQuery(app: JupyterFrontEnd, docManager: IDocumentManager, svcManager: ServiceManager, qtype: string): void {
+  let prompt = "Enter API Query ID"
+  if (qtype == "squash") {
+    prompt = "Enter Squash CI_ID"
+  }
+
+  queryDialog(docManager, prompt).then(queryid => {
     console.log("queryid is", queryid)
     if (!queryid) {
       console.log("queryid was null")
       return new Promise((res, rej) => { })
     }
     // Figure out some more generic way to get params
-    let body = JSON.stringify({ "query_id": queryid })
+    let body = JSON.stringify({
+      "query_id": queryid,
+      "query_type": qtype
+    })
     let endpoint = PageConfig.getBaseUrl() + "lsstquery"
     let init = {
       method: "POST",
@@ -195,10 +210,10 @@ namespace Private {
    */
 
   export
-    function createQueryNode(): HTMLElement {
+    function createQueryNode(prompt: string): HTMLElement {
     let body = document.createElement('div');
     let qidLabel = document.createElement('label');
-    qidLabel.textContent = 'Enter Query ID';
+    qidLabel.textContent = prompt;
     let name = document.createElement('input');
     body.appendChild(qidLabel);
     body.appendChild(name);

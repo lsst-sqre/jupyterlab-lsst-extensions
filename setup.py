@@ -4,11 +4,12 @@ Setup Module to setup Python Handlers for LSST query templating
 import setuptools
 
 setuptools.setup(
-    name='jupyterlab_lsstquery',
-    version='0.0.3',
+    name='jupyterlab_lsstextensions',
+    version='0.0.1-alpha0',
     packages=setuptools.find_packages(),
     install_requires=[
+        'nbreport',
         'notebook',
     ],
-    package_data={'jupyterlab_lsstquery': ['*']},
+    package_data={'jupyterlab_lsstextensions': ['*']},
 )
