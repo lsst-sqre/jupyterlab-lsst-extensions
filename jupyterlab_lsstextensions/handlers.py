@@ -100,9 +100,8 @@ class LSSTQuery_handler(APIHandler):
             repo.context_path,
             extra_context=extra_context
         )
-        rendered_notebook = templ.render_notebook(
-            repo.ipynb_path,
-            *context)
+        nb = repo.open_notebook()
+        rendered_notebook = templ.render_notebook(nb, *context)
         return rendered_notebook
 
     def _get_filename(self, query_id, query_type):
