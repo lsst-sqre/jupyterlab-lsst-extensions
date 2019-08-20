@@ -39,7 +39,8 @@ import {
  */
 export
 namespace CommandIDs {
-  export const lsstQuery: string = 'lsstquery';
+  export const lsstQueryAPI: string = 'lsstqueryapi';
+  export const lsstQuerySquash: string = 'lsstquerysquash';
 };
 
 /**
@@ -59,14 +60,14 @@ function activateLSSTLabExtensions(app: JupyterFrontEnd, mainMenu: IMainMenu, do
 
   let svcManager = app.serviceManager;
 
-  app.commands.addCommand(CommandIDs.lsstQuery, {
+  app.commands.addCommand(CommandIDs.lsstQueryAPI, {
     label: 'Open from Query URL...',
     caption: 'Open notebook from supplied API query URL',
     execute: () => {
       lsstQuery(app, docManager, svcManager, "api")
     }
   });
-  app.commands.addCommand(CommandIDs.lsstQuery, {
+  app.commands.addCommand(CommandIDs.lsstQuerySquash, {
     label: 'Open from CI ID...',
     caption: 'Open notebook from supplied Squash CI ID',
     execute: () => {
@@ -76,7 +77,8 @@ function activateLSSTLabExtensions(app: JupyterFrontEnd, mainMenu: IMainMenu, do
 
   // Add commands and menu itmes.
   const menu = new Menu({ commands: app.commands })
-  menu.addItem({ command: CommandIDs.lsstQuery })
+  menu.addItem({ command: CommandIDs.lsstQueryAPI })
+  menu.addItem({ command: CommandIDs.lsstQuerySquash })
   menu.title.label = "LSST"
   mainMenu.addMenu(menu, {
     rank: 420,
