@@ -35,7 +35,7 @@ class LSSTQuery_handler(APIHandler):
         self.log.debug("Query_Type: {}".format(query_type))
         self.log.debug("Query_ID: {}".format(query_id))
         result = self._substitute_query(query_type, query_id)
-        self.finish(json.dumps(result), sort_keys=True, indent=4)
+        self.finish(json.dumps(result))
 
     def _substitute_query(self, query_type, query_id):
         top = os.environ.get("JUPYTERHUB_SERVICE_PREFIX")
@@ -105,7 +105,10 @@ class LSSTQuery_handler(APIHandler):
         return rendered_notebook
 
     def _get_filename(self, query_id, query_type):
-        fname = "query-" + query_type + "-" + str(query_id) + ".ipynb"
+        qn = urlparse(query_id).path
+        if not qn:
+            qn = query_id
+        fname = "query-" + query_type + "-" + qn + ".ipynb"
         return fname
 
     def _get_extra_context(self, query_type, query_id):
