@@ -104,8 +104,8 @@ class LSSTQuery_handler(APIHandler):
         rendered_notebook = templ.render_notebook(nb, *context)
         return rendered_notebook
 
-    def _get_filename(self, query_id, query_type):
-        self.log.debug("Query ID: {} | Query Type: {}".format(query_id,
+    def _get_filename(self, query_type, query_id):
+        self.log.debug("Query Type: {} | Query ID: {}".format(query_id,
                                                               query_type))
         qn = query_id
         ul = urlparse(query_id)
