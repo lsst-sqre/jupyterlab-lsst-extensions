@@ -91,7 +91,7 @@ class LSSTQuery_handler(APIHandler):
                 repo = ReportRepo.git_clone(template_url,
                                             checkout=branch,
                                             subdir=subdir,
-                                            clone_base_url=td)
+                                            clone_base_dir=td)
                 nb = self._render_notebook(repo, extra_context)
         return nb
 
