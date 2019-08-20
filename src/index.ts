@@ -60,8 +60,8 @@ function activateLSSTLabExtensions(app: JupyterFrontEnd, mainMenu: IMainMenu, do
   let svcManager = app.serviceManager;
 
   app.commands.addCommand(CommandIDs.lsstQuery, {
-    label: 'Open from Query ID...',
-    caption: 'Open notebook from supplied API query ID',
+    label: 'Open from Query URL...',
+    caption: 'Open notebook from supplied API query URL',
     execute: () => {
       lsstQuery(app, docManager, svcManager, "api")
     }
@@ -158,7 +158,7 @@ function apiRequest(url: string, init: RequestInit, settings: ServerConnection.I
 }
 
 function lsstQuery(app: JupyterFrontEnd, docManager: IDocumentManager, svcManager: ServiceManager, qtype: string): void {
-  let prompt = "Enter API Query ID"
+  let prompt = "Enter API Query URL"
   if (qtype == "squash") {
     prompt = "Enter Squash CI_ID"
   }

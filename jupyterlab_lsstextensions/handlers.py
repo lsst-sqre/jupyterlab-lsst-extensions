@@ -112,7 +112,7 @@ class LSSTQuery_handler(APIHandler):
     def _get_extra_context(self, query_type, query_id):
         context = {}
         if query_type == "api":
-            context = {"query_id": query_id}
+            context = {"query_url": query_id}
         elif query_type == "squash":
             context = {"ci_id": query_id}
         else:
