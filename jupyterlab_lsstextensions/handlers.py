@@ -87,7 +87,7 @@ class LSSTQuery_handler(APIHandler):
             repo = ReportRepo(purl.path)
             nb = self._render_notebook(repo, extra_context)
         else:
-            with TemporaryDirectory as td:
+            with TemporaryDirectory() as td:
                 repo = ReportRepo.git_clone(template_url,
                                             checkout=branch,
                                             subdir=subdir,
