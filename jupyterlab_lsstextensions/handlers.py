@@ -105,16 +105,18 @@ class LSSTQuery_handler(APIHandler):
         return rendered_notebook
 
     def _get_filename(self, query_id, query_type):
+        self.log.debug("Query ID: {} | Query Type: {}".format(query_id,
+                                                              query_type))
         qn = query_id
         ul = urlparse(query_id)
+        self.log.debug("Parsed Query ID: {}".format(ul))
         if ul.netloc:
             qn = ul.path
-        qn = qn.replace("/", "-")
-        while (qn[0] == '-'):
-            qn = qn[1:]
+        qn = qn.split('/')[-1]
         if not qn:
             qn = "q"
         fname = "query-" + query_type + "-" + qn + ".ipynb"
+        self.log.debug("Fname: {}".format(fname))
         return fname
 
     def _get_extra_context(self, query_type, query_id):
