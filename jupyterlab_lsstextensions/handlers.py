@@ -41,7 +41,7 @@ class LSSTQuery_handler(APIHandler):
     def _substitute_query(self, query_type, query_id):
         top = os.environ.get("JUPYTERHUB_SERVICE_PREFIX")
         root = os.environ.get("HOME")
-        dir_name = self._get_filename(query_type, query_id)
+        dir_name = self._get_dirname(query_type, query_id)
         fpath = root + "/notebooks/queries/" + dir_name
         os.makedirs(fpath, exist_ok=True)
         filename = fpath + "query.ipynb"
