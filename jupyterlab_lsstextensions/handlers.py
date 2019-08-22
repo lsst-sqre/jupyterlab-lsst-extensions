@@ -4,6 +4,7 @@ This is a Handler Module with all the individual handlers for LSSTQuery
 import json
 import nbformat
 import os
+import shutil
 
 import nbreport.templating as templ
 
@@ -40,10 +41,10 @@ class LSSTQuery_handler(APIHandler):
     def _substitute_query(self, query_type, query_id):
         top = os.environ.get("JUPYTERHUB_SERVICE_PREFIX")
         root = os.environ.get("HOME")
-        fname = self._get_filename(query_type, query_id)
-        fpath = "notebooks/queries/" + fname
-        os.makedirs(root + "/notebooks/queries", exist_ok=True)
-        filename = root + "/" + fpath
+        dir_name = self._get_filename(query_type, query_id)
+        fpath = root + "/notebooks/queries/" + dir_name
+        os.makedirs(fpath, exist_ok=True)
+        filename = fpath + "query.ipynb"
         retval = {
             "status": 404,
             "filename": filename,
@@ -57,7 +58,7 @@ class LSSTQuery_handler(APIHandler):
         else:
             # We need to create the file from template
             try:
-                nb = self._render_from_template(query_type, query_id)
+                nb = self._render_from_template(query_type, query_id, fpath)
                 nbformat.write(nb, filename)
             except ValueError as exc:
                 self.log.error("Render error: {}".format(exc))
@@ -66,7 +67,7 @@ class LSSTQuery_handler(APIHandler):
             retval["body"] = nb
         return retval
 
-    def _render_from_template(self, query_type, query_id):
+    def _render_from_template(self, query_type, query_id, fpath):
         template_map = TEMPLATEMAP.get(query_type)
         if not template_map:
             raise ValueError(
@@ -92,8 +93,19 @@ class LSSTQuery_handler(APIHandler):
                                             checkout=branch,
                                             subdir=subdir,
                                             clone_base_dir=td)
+                self._copy_assets(repo, fpath)
                 nb = self._render_notebook(repo, extra_context)
         return nb
+
+    def _copy_assets(self, repo, fpath):
+        assets = repo.asset_paths()
+        rdir = repo.dirname
+        for a in assets:
+            a_rpath = os.path.relpath(a, rdir)
+            a_rdir = os.path.dirname(a_rpath)
+            d_dir = fpath + "/" + a_rdir
+            os.makedirs(d_dir, exist_ok=True)
+            shutil.copy2(a, d_dir)
 
     def _render_notebook(self, repo, extra_context):
         context = templ.load_template_environment(
@@ -104,7 +116,7 @@ class LSSTQuery_handler(APIHandler):
         rendered_notebook = templ.render_notebook(nb, *context)
         return rendered_notebook
 
-    def _get_filename(self, query_type, query_id):
+    def _get_dirname(self, query_type, query_id):
         self.log.debug("Query Type: {} | Query ID: {}".format(query_id,
                                                               query_type))
         qn = query_id
@@ -115,9 +127,9 @@ class LSSTQuery_handler(APIHandler):
         qn = qn.split('/')[-1]
         if not qn:
             qn = "q"
-        fname = "query-" + query_type + "-" + qn + ".ipynb"
-        self.log.debug("Fname: {}".format(fname))
-        return fname
+        dir_name = "query-" + query_type + "-" + qn
+        self.log.debug("Fname: {}".format(dir_name))
+        return dir_name
 
     def _get_extra_context(self, query_type, query_id):
         context = {}

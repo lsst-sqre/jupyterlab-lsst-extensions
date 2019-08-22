@@ -5,10 +5,10 @@ import setuptools
 
 setuptools.setup(
     name='jupyterlab_lsstextensions',
-    version='0.0.1-alpha0',
+    version='0.0.2',
     packages=setuptools.find_packages(),
     install_requires=[
-        'nbreport',
+        'nbreport>=0.7.3rc1',
         'notebook',
     ],
     package_data={'jupyterlab_lsstextensions': ['*']},
