@@ -98,7 +98,7 @@ class LSSTQuery_handler(APIHandler):
         return nb
 
     def _copy_assets(self, repo, fpath):
-        assets = repo.asset_paths()
+        assets = repo.asset_paths
         rdir = repo.dirname
         for a in assets:
             a_rpath = os.path.relpath(a, rdir)
