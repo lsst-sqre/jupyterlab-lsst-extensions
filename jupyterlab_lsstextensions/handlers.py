@@ -42,24 +42,26 @@ class LSSTQuery_handler(APIHandler):
         top = os.environ.get("JUPYTERHUB_SERVICE_PREFIX")
         root = os.environ.get("HOME")
         dir_name = self._get_dirname(query_type, query_id)
-        fpath = root + "/notebooks/queries/" + dir_name
-        os.makedirs(fpath, exist_ok=True)
-        filename = fpath + "query.ipynb"
+        fpath = "notebooks/queries/" + dir_name
+        rpath = root + "/" + fpath
+        os.makedirs(rpath, exist_ok=True)
+        rfilename = rpath + "/query.ipynb"
+        jfilename = top + "/tree/" + fpath + "/query.ipynb"
         retval = {
             "status": 404,
-            "filename": filename,
+            "filename": rfilename,
             "path": fpath,
-            "url": top + "/tree/" + fpath,
+            "url": jfilename,
             "body": None
         }
-        if os.path.exists(filename):
-            with open(filename, "rb") as f:
+        if os.path.exists(rfilename):
+            with open(rfilename, "rb") as f:
                 nb = f.read().decode("utf-8")
         else:
             # We need to create the file from template
             try:
                 nb = self._render_from_template(query_type, query_id, fpath)
-                nbformat.write(nb, filename)
+                nbformat.write(nb, rfilename)
             except ValueError as exc:
                 self.log.error("Render error: {}".format(exc))
         if nb:
