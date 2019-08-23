@@ -50,7 +50,7 @@ class LSSTQuery_handler(APIHandler):
         retval = {
             "status": 404,
             "filename": rfilename,
-            "path": fpath,
+            "path": fpath + "/query.ipynb",
             "url": jfilename,
             "body": None
         }
