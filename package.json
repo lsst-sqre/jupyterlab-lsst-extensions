@@ -1,6 +1,6 @@
 {
   "name": "@lsst-sqre/jupyterlab-lsstextensions",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "LSST Query functions menu",
   "author": "LSST DM/SQuaRE",
   "main": "lib/index.js",
