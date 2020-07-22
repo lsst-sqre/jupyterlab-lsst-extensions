@@ -1,6 +1,6 @@
 {
   "name": "@lsst-sqre/jupyterlab-lsstextensions",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "description": "LSST Query functions menu",
   "author": "LSST DM/SQuaRE",
   "main": "lib/index.js",
@@ -26,17 +26,17 @@
     "extension": true
   },
   "dependencies": {
-    "@jupyterlab/application": "^1.0",
-    "@jupyterlab/apputils": "^1.0",
-    "@jupyterlab/coreutils": "^3.0",
-    "@jupyterlab/docmanager": "^1.0",
-    "@jupyterlab/mainmenu": "^1.0",
-    "@phosphor/algorithm": "^1.1.2",
-    "@phosphor/widgets": "^1.6.0",
-    "@types/core-js": "^2.5.0"
+    "@jupyterlab/application": "^2",
+    "@jupyterlab/apputils": "^2",
+    "@jupyterlab/coreutils": "^4",
+    "@jupyterlab/docmanager": "^2",
+    "@jupyterlab/mainmenu": "^2",
+    "@phosphor/algorithm": "^1",
+    "@phosphor/widgets": "^1.0",
+    "@types/core-js": "^2"
   },
   "devDependencies": {
-    "rimraf": "^2.6.1",
-    "typescript": "^3.5.3"
+    "rimraf": "^2",
+    "typescript": "^3"
   }
 }

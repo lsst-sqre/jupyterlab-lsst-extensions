@@ -3,7 +3,7 @@
 
 import {
   Menu
-} from '@phosphor/widgets';
+} from '@lumino/widgets';
 
 import {
   showDialog, Dialog
@@ -32,7 +32,7 @@ import {
 
 import {
   Widget
-} from '@phosphor/widgets';
+} from '@lumino/widgets';
 
 /**
  * The command IDs used by the plugin.
