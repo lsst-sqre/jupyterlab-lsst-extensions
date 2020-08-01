@@ -21,15 +21,16 @@ class LSSTQuery_handler(APIHandler):
     """
     LSSTQuery Parent Handler.
     """
+
     @property
     def lsstquery(self):
-        return self.settings['lsstquery']
+        return self.settings["lsstquery"]
 
     def post(self):
         """
         POST a queryID and get back a prepopulated notebook.
         """
-        post_data = json.loads(self.request.body.decode('utf-8'))
+        post_data = json.loads(self.request.body.decode("utf-8"))
         # Do The Deed
         query_id = post_data["query_id"]
         query_type = post_data["query_type"]
@@ -52,7 +53,7 @@ class LSSTQuery_handler(APIHandler):
             "filename": rfilename,
             "path": fpath + "/query.ipynb",
             "url": jfilename,
-            "body": None
+            "body": None,
         }
         if os.path.exists(rfilename):
             with open(rfilename, "rb") as f:
@@ -73,13 +74,15 @@ class LSSTQuery_handler(APIHandler):
         template_map = TEMPLATEMAP.get(query_type)
         if not template_map:
             raise ValueError(
-                "No template for query type '{}'!".format(query_type))
+                "No template for query type '{}'!".format(query_type)
+            )
         template_url = template_map.get("url")
         branch = template_map.get("branch") or "master"
         subdir = template_map.get("subdir")
         if not template_url:
             raise ValueError(
-                "No template URL for query type '{}'!".format(query_type))
+                "No template URL for query type '{}'!".format(query_type)
+            )
         repo = None
         nb = None
         extra_context = self._get_extra_context(query_type, query_id)
@@ -91,10 +94,12 @@ class LSSTQuery_handler(APIHandler):
             nb = self._render_notebook(repo, extra_context)
         else:
             with TemporaryDirectory() as td:
-                repo = ReportRepo.git_clone(template_url,
-                                            checkout=branch,
-                                            subdir=subdir,
-                                            clone_base_dir=td)
+                repo = ReportRepo.git_clone(
+                    template_url,
+                    checkout=branch,
+                    subdir=subdir,
+                    clone_base_dir=td,
+                )
                 self._copy_assets(repo, fpath)
                 nb = self._render_notebook(repo, extra_context)
         return nb
@@ -111,22 +116,22 @@ class LSSTQuery_handler(APIHandler):
 
     def _render_notebook(self, repo, extra_context):
         context = templ.load_template_environment(
-            repo.context_path,
-            extra_context=extra_context
+            repo.context_path, extra_context=extra_context
         )
         nb = repo.open_notebook()
         rendered_notebook = templ.render_notebook(nb, *context)
         return rendered_notebook
 
     def _get_dirname(self, query_type, query_id):
-        self.log.debug("Query Type: {} | Query ID: {}".format(query_id,
-                                                              query_type))
+        self.log.debug(
+            "Query Type: {} | Query ID: {}".format(query_id, query_type)
+        )
         qn = query_id
         ul = urlparse(query_id)
         self.log.debug("Parsed Query ID: {}".format(ul))
         if ul.netloc:
             qn = ul.path
-        qn = qn.split('/')[-1]
+        qn = qn.split("/")[-1]
         if not qn:
             qn = "q"
         dir_name = "query-" + query_type + "-" + qn
@@ -149,7 +154,7 @@ def setup_handlers(web_app):
     Function used to setup all the handlers used.
     """
     # add the baseurl to our paths
-    host_pattern = '.*$'
-    base_url = web_app.settings['base_url']
-    handlers = [(ujoin(base_url, r'/lsstquery'), LSSTQuery_handler)]
+    host_pattern = ".*$"
+    base_url = web_app.settings["base_url"]
+    handlers = [(ujoin(base_url, r"/lsstquery"), LSSTQuery_handler)]
     web_app.add_handlers(host_pattern, handlers)

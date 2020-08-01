@@ -8,9 +8,7 @@ def _jupyter_server_extension_paths():
     """
     Function to declare Jupyter Server Extension Paths.
     """
-    return [{
-        'module': 'jupyterlab_lsstextensions',
-    }]
+    return [{"module": "jupyterlab_lsstextensions",}]
 
 
 # def _jupyter_nbextension_paths():
